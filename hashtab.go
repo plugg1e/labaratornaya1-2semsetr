@@ -40,22 +40,41 @@ func (ht *HashTab) AddHash(key, value string) {
 	ht.tabl[index] = newNode
 }
 
-func (ht *HashTab) KeyItem(key string) {
-	index := ht.Hash(key)
-	if ht.tabl[index] != nil && ht.tabl[index].key == key {
-		fmt.Printf("ключ: %s значение: %s\n", key, ht.tabl[index].value)
-		return
-	}
-	fmt.Println("такого ключа нет.")
-}
-
 func (ht *HashTab) DelValue(key string) {
 	index := ht.Hash(key)
-	if ht.tabl[index] != nil && ht.tabl[index].key == key {
-		ht.tabl[index] = nil
+	if ht.tabl[index] == nil {
+		fmt.Println("такого ключа нет.")
 		return
 	}
-	fmt.Println("такого ключа нет.")
+
+	if ht.tabl[index].key == key {
+		ht.tabl[index] = ht.tabl[index].next
+		return
+	}
+
+	prev := ht.tabl[index]
+	for prev.next != nil && prev.next.key != key {
+		prev = prev.next
+	}
+
+	if prev.next != nil {
+		prev.next = prev.next.next
+	} else {
+		fmt.Println("такого ключа нет.")
+	}
+}
+
+func (ht *HashTab) KeyItem(key string) {
+	index := ht.Hash(key)
+	current := ht.tabl[index]
+	for current != nil {
+		if current.key == key {
+			fmt.Printf("ключ: %s значение: %s\n", key, current.value)
+			return
+		}
+		current = current.next
+	}
+	fmt.Println("такого ключа нет")
 }
 
 func (ht *HashTab) Print() {
@@ -91,3 +110,5 @@ func WorkHash(comand string, ht *HashTab) {
 		ht.Print()
 	}
 }
+
+// кей1 - первый ключ 1кей - второй ключ к1й - трейтий ключ
